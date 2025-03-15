@@ -42,6 +42,18 @@ This template uses:
 - `devenv.yaml` - Configures devenv to use nixpkgs-unstable for the latest packages
 - `.envrc` - Configures direnv to use devenv (optional, but provides automatic activation)
 
+### Why nixpkgs-unstable?
+
+By default, devenv uses `github:cachix/devenv-nixpkgs/rolling` as its nixpkgs source. However, this template intentionally uses `github:NixOS/nixpkgs/nixpkgs-unstable` for several reasons:
+
+1. **Latest Elixir versions:** The nixpkgs-unstable channel typically includes the most recent versions of Elixir and Erlang soon after they're released. For example, Elixir 1.18.3 was available in nixpkgs-unstable before it appeared in the default devenv nixpkgs.
+
+2. **Broader package selection:** Access to the complete set of packages in the main nixpkgs repository, which may be useful when adding dependencies to your project.
+
+3. **Community updates:** The main nixpkgs repository receives more frequent updates for language-specific packages from the broader Nix community.
+
+This approach prioritizes having the latest language features over the potential stability benefits of the default channel. For most Elixir development, this trade-off is worthwhile as it provides access to the newest language capabilities.
+
 ## Customizing
 
 ### Adding dependencies
