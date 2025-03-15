@@ -98,10 +98,15 @@ For more information:
 This template includes GitHub Actions workflows for continuous integration:
 
 - **CI workflow**: Automatically tests that the development environment builds correctly on every push and pull request
+  - Tests on both Ubuntu and macOS to ensure cross-platform compatibility
+- **Format checking**: Verifies that Nix and YAML files adhere to consistent formatting guidelines
+- **Documentation validation**:
+  - Checks for broken links in markdown files
+  - Validates markdown for common style and formatting issues
 - **Dependency updates**: A scheduled workflow that automatically updates Nix dependencies and creates a pull request with the changes
 - **Dependabot**: Keeps GitHub Actions dependencies up-to-date with weekly checks
 
-These workflows ensure that your development environment remains stable and up-to-date with minimal manual intervention.
+These workflows ensure that your development environment remains stable, well-formatted, and up-to-date with minimal manual intervention.
 
 ## Customizing
 
