@@ -54,6 +54,43 @@ By default, devenv uses `github:cachix/devenv-nixpkgs/rolling` as its nixpkgs so
 
 This approach prioritizes having the latest language features over the potential stability benefits of the default channel. For most Elixir development, this trade-off is worthwhile as it provides access to the newest language capabilities.
 
+#### Alternative Approach
+
+If you encounter issues with our direct method (replacing the nixpkgs source in devenv.yaml), you can follow the [official devenv approach](https://devenv.sh/common-patterns/#getting-a-recent-version-of-a-package-from-nixpkgs-unstable) for using packages from nixpkgs-unstable:
+
+1. Keep the default nixpkgs source and add nixpkgs-unstable as an additional input in `devenv.yaml`:
+
+   ```yaml
+   inputs:
+     nixpkgs:
+       url: github:cachix/devenv-nixpkgs/rolling
+     nixpkgs-unstable:
+       url: github:nixos/nixpkgs/nixpkgs-unstable
+   ```
+
+2. Use the unstable package in `devenv.nix`:
+   ```nix
+   { pkgs, inputs, ... }:
+   let
+     pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
+   in
+   {
+     languages.elixir = {
+       enable = true;
+       package = pkgs-unstable.beam.packages.erlang_27.elixir;
+     };
+     languages.erlang.enable = true;
+   }
+   ```
+
+This method keeps the stability benefits of the default devenv nixpkgs for most packages while still allowing specific access to newer versions from unstable when needed.
+
+For more information:
+
+- [Devenv documentation on using nixpkgs-unstable](https://devenv.sh/common-patterns/#getting-a-recent-version-of-a-package-from-nixpkgs-unstable)
+- [Discussion about package versioning in Nix](https://github.com/NixOS/nixpkgs/issues/93327)
+- [NixOS search for Elixir packages](https://search.nixos.org/packages?channel=unstable&query=elixir)
+
 ## Customizing
 
 ### Adding dependencies
