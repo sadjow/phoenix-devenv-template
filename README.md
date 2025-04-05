@@ -71,6 +71,7 @@ If you encounter issues with our direct method (replacing the nixpkgs source in 
    ```
 
 2. Use the unstable package in `devenv.nix`:
+
    ```nix
    { pkgs, inputs, ... }:
    let
