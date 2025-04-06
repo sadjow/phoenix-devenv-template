@@ -8,6 +8,8 @@ A minimal and reproducible development environment for Elixir and Erlang project
 - Automatic environment activation with direnv (optional but recommended)
 - Zero system-wide installations required (except Nix itself)
 - Consistent developer experience across all platforms (macOS, Linux, WSL)
+- CI integration with GitHub Actions
+- Automated dependency updates with Dependabot
 
 ## Prerequisites
 
@@ -69,6 +71,7 @@ If you encounter issues with our direct method (replacing the nixpkgs source in 
    ```
 
 2. Use the unstable package in `devenv.nix`:
+
    ```nix
    { pkgs, inputs, ... }:
    let
@@ -90,6 +93,17 @@ For more information:
 - [Devenv documentation on using nixpkgs-unstable](https://devenv.sh/common-patterns/#getting-a-recent-version-of-a-package-from-nixpkgs-unstable)
 - [Discussion about package versioning in Nix](https://github.com/NixOS/nixpkgs/issues/93327)
 - [NixOS search for Elixir packages](https://search.nixos.org/packages?channel=unstable&query=elixir)
+
+## CI Setup
+
+This template includes GitHub Actions workflows for continuous integration:
+
+- **CI workflow**: Automatically tests that the development environment builds correctly on every push and pull request
+  - Tests on both Ubuntu and macOS to ensure cross-platform compatibility
+- **Dependency updates**: A scheduled workflow that automatically updates Nix dependencies and creates a pull request with the changes
+- **Dependabot**: Keeps GitHub Actions dependencies up-to-date with weekly checks
+
+These workflows ensure that your development environment remains stable, well-formatted, and up-to-date with minimal manual intervention.
 
 ## Customizing
 
