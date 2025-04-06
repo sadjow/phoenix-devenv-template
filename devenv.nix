@@ -17,7 +17,7 @@
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_16;
-    initialDatabases = [ { name = "phoenix_dev"; } { name = "phoenix_test"; } ];
+    initialDatabases = [ { name = "phoenix_devenv_dev"; } ];
     initialScript = "CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres' CREATEDB;";
   };
 
