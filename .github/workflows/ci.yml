@@ -40,7 +40,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           # Wait up to 30 seconds for PostgreSQL to be ready
-          timeout=30
+          timeout=240
           until pg_isready -U postgres || [ $timeout -le 0 ]
           do
             echo "Waiting for PostgreSQL to be ready... ($timeout seconds left)"
