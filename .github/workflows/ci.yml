@@ -38,10 +38,11 @@ jobs:
 
       # Wait for PostgreSQL to be available
       - name: Wait for PostgreSQL
+        shell: devenv shell bash -- -e {0}
         run: |
           # Wait up to 30 seconds for PostgreSQL to be ready
           timeout=30
-          until devenv shell pg_isready -h localhost -U postgres || [ $timeout -le 0 ]
+          until pg_isready -h localhost -U postgres || [ $timeout -le 0 ]
           do
             echo "Waiting for PostgreSQL to be ready... ($timeout seconds left)"
             sleep 1
@@ -57,20 +58,29 @@ jobs:
 
       # Phoenix application tests
       - name: Setup Phoenix environment
-        run: devenv shell "mix local.hex --force && mix local.rebar --force"
+        shell: devenv shell bash -- -e {0}
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
 
       - name: Install Phoenix dependencies
-        run: devenv shell "mix deps.get"
+        shell: devenv shell bash -- -e {0}
+        run: mix deps.get
 
       - name: Compile Phoenix application
-        run: devenv shell "mix compile --warnings-as-errors"
+        shell: devenv shell bash -- -e {0}
+        run: mix compile --warnings-as-errors
 
       - name: Create and migrate test database
-        run: devenv shell "mix ecto.create && mix ecto.migrate"
+        shell: devenv shell bash -- -e {0}
         env:
           MIX_ENV: test
+        run: |
+          mix ecto.create
+          mix ecto.migrate
 
       - name: Run Phoenix tests
-        run: devenv shell "mix test"
+        shell: devenv shell bash -- -e {0}
         env:
           MIX_ENV: test
+        run: mix test
