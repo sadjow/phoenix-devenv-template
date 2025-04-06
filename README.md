@@ -1,4 +1,4 @@
-# Phoenix Devenv Reference Implementation
+# Phoenix Devenv Template
 
 A reference implementation and development environment for Phoenix Framework projects using [devenv](https://devenv.sh/) and Nix. This project demonstrates how to use devenv to create a reproducible development environment for Phoenix applications.
 
@@ -196,7 +196,7 @@ To add additional packages to your environment, modify the `devenv.nix` file:
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_16;
-    initialDatabases = [ { name = "phoenix_dev"; } { name = "phoenix_test"; } ];
+    initialDatabases = [ { name = "phoenix_devenv_dev"; } ];
     initialScript = "CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres' CREATEDB;";
   };
 
