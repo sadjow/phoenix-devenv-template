@@ -39,17 +39,34 @@ jobs:
       - name: Wait for PostgreSQL
         shell: devenv shell bash -- -e {0}
         run: |
-          # Wait up to 30 seconds for PostgreSQL to be ready
-          timeout=240
+          # Print debugging information
+          echo "User ID: $(id -u)"
+          echo "Looking for PostgreSQL socket files:"
+          find /run/user -name ".s.PGSQL.*" -ls 2>/dev/null || echo "No socket files found in /run/user"
+          find /tmp -name ".s.PGSQL.*" -ls 2>/dev/null || echo "No socket files found in /tmp"
+          echo "PostgreSQL process info:"
+          ps aux | grep postgres || echo "No postgres processes found"
+
+          # Wait up to 120 seconds for PostgreSQL to be ready
+          timeout=120
           until pg_isready -U postgres || [ $timeout -le 0 ]
           do
             echo "Waiting for PostgreSQL to be ready... ($timeout seconds left)"
+            echo "Trying with explicit socket directory..."
+            socket_dir=$(find /run/user -path "*/postgres" -type d 2>/dev/null | head -1)
+            if [ -n "$socket_dir" ]; then
+              pg_isready -h "$socket_dir" -U postgres
+            fi
             sleep 1
             timeout=$((timeout-1))
           done
 
           if [ $timeout -le 0 ]; then
             echo "Timed out waiting for PostgreSQL"
+            echo "Final debugging info:"
+            find /run/user -name ".s.PGSQL.*" -ls 2>/dev/null
+            find /tmp -name ".s.PGSQL.*" -ls 2>/dev/null
+            netstat -ltnp 2>/dev/null | grep postgres || echo "No postgres connections found"
             exit 1
           else
             echo "PostgreSQL is ready!"
