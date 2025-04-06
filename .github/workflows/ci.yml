@@ -19,7 +19,7 @@ jobs:
       - uses: cachix/install-nix-action@v23
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
-      - uses: cachix/cachix-action@v13
+      - uses: cachix/cachix-action@v16
         with:
           name: devenv
       - name: Install devenv
