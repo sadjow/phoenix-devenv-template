@@ -1,6 +1,6 @@
-# Phoenix Elixir Devenv Template
+# Phoenix Devenv Reference Implementation
 
-A minimal and reproducible development environment for Phoenix Framework projects using [devenv](https://devenv.sh/) and Nix.
+A reference implementation and development environment for Phoenix Framework projects using [devenv](https://devenv.sh/) and Nix. This project demonstrates how to use devenv to create a reproducible development environment for Phoenix applications.
 
 ## Features
 
@@ -35,25 +35,22 @@ direnv allow
 
 # Or manually enter the environment:
 devenv shell
-
-# Create a new Phoenix application
-mix phx.new app_name
-
-# Enter the new application directory
-cd app_name
-
-# Setup the database
-mix ecto.create
-
-# Start the Phoenix server
-mix phx.server
 ```
 
-Your Phoenix application will be available at [http://localhost:4000](http://localhost:4000)
+## Using the Phoenix Application
+
+This repository includes a pre-generated Phoenix application as a reference.
+
+To start the Phoenix server:
+
+- Run `mix setup` to install and setup dependencies
+- Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Creating a New Phoenix Project
 
-You can create different types of Phoenix applications based on your needs:
+You can use this template as a starting point for new Phoenix projects. If you want to create a completely new Phoenix application:
 
 ### Standard Phoenix Application
 
@@ -104,7 +101,7 @@ This template uses:
 - `devenv.yaml` - Configures devenv to use nixpkgs-unstable for the latest packages
 - `.envrc` - Configures direnv to use devenv (optional, but provides automatic activation)
 
-This Phoenix template includes all dependencies required for Phoenix development, including:
+This reference implementation includes all dependencies required for Phoenix development, including:
 
 - PostgreSQL database for data storage
 - Node.js for asset compilation
@@ -141,36 +138,17 @@ To add additional packages to your environment, modify the `devenv.nix` file:
     initialScript = "CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres' CREATEDB;";
   };
 
-  pre-commit = {
-    hooks = {
-      markdownlint = {
-        enable = true;
-        settings.configuration = {
-          default = true;
-          MD013 = false;
-          MD024 = false;
-          MD033 = false;
-        };
-      };
-    };
-  };
-
-  enterShell = ''
-    echo "Elixir version: $(elixir --version)"
-    echo "Erlang version: $(erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
-    echo "Node.js version: $(node --version)"
-    echo "PostgreSQL version: $(psql --version)"
-
-    # Check if Phoenix CLI is installed
-    if ! mix archive | grep -q "phx_new"; then
-      echo "Phoenix CLI not installed. Installing now..."
-      mix archive.install hex phx_new --force
-    else
-      echo "Phoenix CLI is installed."
-    fi
-  '';
+  # Other configuration...
 }
 ```
+
+## Learn More About Phoenix
+
+- Official website: [https://www.phoenixframework.org/](https://www.phoenixframework.org/)
+- Guides: [https://hexdocs.pm/phoenix/overview.html](https://hexdocs.pm/phoenix/overview.html)
+- Docs: [https://hexdocs.pm/phoenix](https://hexdocs.pm/phoenix)
+- Forum: [https://elixirforum.com/c/phoenix-forum](https://elixirforum.com/c/phoenix-forum)
+- Source: [https://github.com/phoenixframework/phoenix](https://github.com/phoenixframework/phoenix)
 
 ## Deploying Phoenix Applications
 
