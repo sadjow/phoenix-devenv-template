@@ -36,6 +36,16 @@ jobs:
       - name: Start PostgreSQL from devenv
         run: devenv up &
 
+      # Give PostgreSQL time to initialize
+      - name: Wait for PostgreSQL processes to start
+        shell: bash -e {0}
+        run: |
+          echo "Giving PostgreSQL time to initialize..."
+          sleep 15
+          echo "Checking if PostgreSQL is running:"
+          ps aux | grep "[p]ostgres" || echo "No postgres processes found yet"
+
+      # Wait for PostgreSQL
       - name: Wait for PostgreSQL
         shell: devenv shell bash -- -e {0}
         run: |
@@ -44,33 +54,47 @@ jobs:
           echo "Looking for PostgreSQL socket files:"
           find /run/user -name ".s.PGSQL.*" -ls 2>/dev/null || echo "No socket files found in /run/user"
           find /tmp -name ".s.PGSQL.*" -ls 2>/dev/null || echo "No socket files found in /tmp"
+
+          echo "PostgreSQL data directories:"
+          find /run/user -path "*/postgres" -type d -ls 2>/dev/null || echo "No postgres directories found"
+
           echo "PostgreSQL process info:"
-          ps aux | grep postgres || echo "No postgres processes found"
+          ps aux | grep "[p]ostgres" || echo "No postgres processes found"
 
           # Wait up to 120 seconds for PostgreSQL to be ready
           timeout=120
-          until pg_isready -U postgres || [ $timeout -le 0 ]
+
+          # First try the auto-detection approach
+          echo "Attempting to connect using socket directory detection..."
+          until [ $timeout -le 0 ]
           do
-            echo "Waiting for PostgreSQL to be ready... ($timeout seconds left)"
-            echo "Trying with explicit socket directory..."
+            # Try to find the socket directory dynamically
             socket_dir=$(find /run/user -path "*/postgres" -type d 2>/dev/null | head -1)
             if [ -n "$socket_dir" ]; then
-              pg_isready -h "$socket_dir" -U postgres
+              echo "Trying connection with socket directory: $socket_dir"
+              if pg_isready -h "$socket_dir" -U postgres; then
+                echo "PostgreSQL is ready!"
+                exit 0
+              fi
             fi
-            sleep 1
-            timeout=$((timeout-1))
+
+            # Also try the default connection
+            if pg_isready -U postgres; then
+              echo "PostgreSQL is ready with default connection!"
+              exit 0
+            fi
+
+            echo "Waiting for PostgreSQL to be ready... ($timeout seconds left)"
+            sleep 2
+            timeout=$((timeout-2))
           done
 
-          if [ $timeout -le 0 ]; then
-            echo "Timed out waiting for PostgreSQL"
-            echo "Final debugging info:"
-            find /run/user -name ".s.PGSQL.*" -ls 2>/dev/null
-            find /tmp -name ".s.PGSQL.*" -ls 2>/dev/null
-            netstat -ltnp 2>/dev/null | grep postgres || echo "No postgres connections found"
-            exit 1
-          else
-            echo "PostgreSQL is ready!"
-          fi
+          echo "Timed out waiting for PostgreSQL"
+          echo "Final debugging info:"
+          find /run/user -name ".s.PGSQL.*" -ls 2>/dev/null || echo "No socket files found in /run/user"
+          ps aux | grep postgres || echo "No postgres processes found"
+          netstat -ltnp 2>/dev/null | grep postgres || echo "No postgres connections found"
+          exit 1
 
       # Phoenix application tests - ensure HOME is set properly
       - name: Setup Phoenix environment
