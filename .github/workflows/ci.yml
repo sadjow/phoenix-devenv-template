@@ -36,6 +36,7 @@ jobs:
       - name: Start PostgreSQL from devenv
         run: |
           devenv up &
+          sleep 60 # Wait for PostgreSQL to be ready
 
       - name: Setup Phoenix environment
         shell: devenv shell bash -- -e {0}
