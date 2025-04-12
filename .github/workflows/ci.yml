@@ -40,9 +40,22 @@ jobs:
       - name: Test build environment
         run: devenv test
 
-      - name: Start PostgreSQL
-        run: |
-          devenv up &
+      - name: Start PostgreSQL and wait for it to be ready
+        uses: JarvusInnovations/background-action@v1
+        with:
+          run: devenv up
+          wait-on: |
+            tcp:localhost:5432
+          wait-for: 2m
+          tail: true
+          log-output: stderr,stdout
+          log-output-if: failure
+
+      - name: Verify PostgreSQL is ready
+        shell: devenv shell bash -- -e {0}
+        env:
+          HOME: "/home/runner"
+        run: check-postgres
 
       - name: Setup Phoenix environment
         shell: devenv shell bash -- -e {0}
