@@ -43,7 +43,7 @@ jobs:
       - name: Start PostgreSQL and wait for it to be ready
         uses: JarvusInnovations/background-action@v1
         with:
-          run: devenv up
+          run: devenv up &
           wait-on: |
             tcp:localhost:5432
           wait-for: 2m
