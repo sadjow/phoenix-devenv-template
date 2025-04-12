@@ -29,6 +29,14 @@ jobs:
       - name: Install devenv
         run: nix-env -if https://github.com/cachix/devenv/tarball/latest
 
+      # Add step to set up DEVENV_HOME for macOS
+      - name: Configure devenv for macOS
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p ${HOME}/.local/state/devenv
+          export DEVENV_HOME=${HOME}/.local/state/devenv
+          echo "DEVENV_HOME=${HOME}/.local/state/devenv" >> $GITHUB_ENV
+
       - name: Test build environment
         run: devenv test
 
