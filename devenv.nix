@@ -21,6 +21,21 @@
     initialScript = "CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres' CREATEDB;";
   };
 
+  scripts.check-postgres.exec = ''
+    if pg_isready -q -d phoenix_devenv_dev -U postgres -h localhost; then
+      echo "PostgreSQL is running and accepting connections on database 'phoenix_devenv_dev' with user 'postgres'."
+      exit 0
+    else
+      echo "PostgreSQL is not ready or not accepting connections."
+      exit 1
+    fi
+  '';
+
+  scripts.start-postgres.exec = ''
+    echo "Starting PostgreSQL service..."
+    pg_ctl start -D $PGDATA -o "-p 5432" || echo "PostgreSQL may already be running or there was an error"
+  '';
+
   pre-commit = {
     hooks = {
       markdownlint = {
