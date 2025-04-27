@@ -14,9 +14,9 @@ jobs:
         os: [ubuntu-latest, macos-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: devenv shell bash -- -e {0}
+    # defaults:
+    #   run:
+    #     shell: devenv shell bash -- -e {0}
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
