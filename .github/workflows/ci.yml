@@ -22,7 +22,3 @@ jobs:
 
       - name: devenv test
         run: devenv test
-
-      - name: Phoenix tests
-        run: |
-          mix do deps.get, ecto.create, ecto.migrate, test

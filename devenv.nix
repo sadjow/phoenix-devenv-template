@@ -65,4 +65,8 @@
       echo "Phoenix CLI is installed."
     fi
   '';
+
+  enterTest = ''
+    mix do deps.get, ecto.create, ecto.migrate, test
+  '';
 }
