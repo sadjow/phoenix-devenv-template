@@ -1,48 +1,60 @@
-name: CI
+name: Elixir CI
+
 on: push
 
+env:
+  MIX_ENV: test
+
+permissions:
+  contents: read
+
 jobs:
-  tests:
+  test:
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_DB: phoenix_devenv_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: devenv shell bash -- -e {0}
-
+    name: Test
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: cachix/install-nix-action@v31
+      - name: Set up Elixir
+        id: setup-beam
+        uses: erlef/setup-beam@v1
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: cachix/cachix-action@v15
-        with: 
-          name: devenv
-
-      # Install devenv itself (must run in plain Bash!)
-      - name: Install devenv
-        shell: bash
-        run: nix profile install nixpkgs#devenv
+          version-file: .tool-versions
+          version-type: strict
 
       - name: Cache deps
         id: cache-deps
         uses: actions/cache@v4
         with:
           path: deps
-          key: deps-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          key: deps-${{ runner.os }}-${{ steps.setup-beam.outputs.otp-version }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            deps-${{ runner.os }}-
+            deps-${{ runner.os }}-${{ steps.setup-beam.outputs.otp-version }}-${{ steps.setup-beam.outputs.elixir-version }}-
 
       - name: Cache compiled build
         id: cache-build
         uses: actions/cache@v4
         with:
           path: _build
-          key: build-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          key: build-${{ runner.os }}-${{ steps.setup-beam.outputs.otp-version }}-${{ steps.setup-beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            build-${{ runner.os }}-
-
-      - name: Start PostgreSQL
-        run: devenv processes start postgres &
+            build-${{ runner.os }}-${{ steps.setup-beam.outputs.otp-version }}-${{ steps.setup-beam.outputs.elixir-version }}-
 
       - name: Install dependencies
         run: mix deps.get

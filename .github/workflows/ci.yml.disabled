@@ -1,0 +1,57 @@
+name: CI
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: devenv shell bash -- -e {0}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: cachix/cachix-action@v15
+        with: 
+          name: devenv
+
+      # Install devenv itself (must run in plain Bash!)
+      - name: Install devenv
+        shell: bash
+        run: nix profile install nixpkgs#devenv
+
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: deps
+          key: deps-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Cache compiled build
+        id: cache-build
+        uses: actions/cache@v4
+        with:
+          path: _build
+          key: build-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
+      - name: Start PostgreSQL
+        run: devenv processes start postgres &
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile with warnings as errors
+        run: mix compile --warnings-as-errors
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+      - name: Run tests
+        run: mix test
