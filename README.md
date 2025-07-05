@@ -13,6 +13,16 @@ A reference implementation and development environment for Phoenix Framework pro
 - Consistent developer experience across all platforms (macOS, Linux, WSL)
 - CI integration with GitHub Actions
 - Automated dependency updates with Dependabot
+- Automated weekly dependency updates via GitHub Actions
+- Auto-merge support for dependency PRs
+
+## CI/CD Setup
+
+This template includes automated workflows for dependency management. To enable all features:
+
+1. Run the configuration script: `./scripts/configure-repo-settings.sh`
+2. Follow the manual steps in the script output
+3. See [docs/CI_SETUP.md](docs/CI_SETUP.md) for detailed instructions
 
 ## Prerequisites
 
