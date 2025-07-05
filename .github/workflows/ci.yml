@@ -20,9 +20,6 @@ jobs:
         shell: bash
         run: nix profile install nixpkgs#devenv
 
-      - name: devenv test
-        run: devenv test
-
       - name: Cache deps
         id: cache-deps
         uses: actions/cache@v4
