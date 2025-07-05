@@ -25,11 +25,16 @@ This template includes automated workflows:
 
 To enable all features:
 
-1. Run the configuration script: `./scripts/configure-repo-settings.sh`
+**For new projects (using this template):**
+1. Run: `./scripts/setup-for-projects.sh`
 2. Follow the manual steps in the script output
-3. See [docs/CI_SETUP.md](docs/CI_SETUP.md) for detailed instructions
 
-**Important:** When using this template for your project, consider removing `.github/workflows/update-phoenix.yml` as it's designed specifically for maintaining the template repository.
+**For template repository maintainers only:**
+1. Run: `./scripts/setup-template-repo.sh`
+2. Follow the manual steps in the script output
+
+See [docs/CI_SETUP.md](docs/CI_SETUP.md) for detailed instructions
+
 
 ## Prerequisites
 

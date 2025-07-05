@@ -35,16 +35,28 @@ Protect your main branch with required status checks:
    - Select required checks: `CI` and/or `Elixir Tests`
    - **Require branches to be up to date before merging**
 
-## Automated Setup Script
+## Automated Setup Scripts
 
-You can use the provided script to configure some settings automatically:
+### For Projects Using This Template
 
 ```bash
 # Make sure you're authenticated with GitHub CLI
 gh auth status
 
-# Run the configuration script
-./scripts/configure-repo-settings.sh
+# Run the setup script for projects
+./scripts/setup-for-projects.sh
+```
+
+This script will:
+- Enable auto-merge and branch deletion
+- Remove template-only files (Phoenix update workflow and template setup script)
+- Guide you through manual configuration
+
+### For Template Repository Maintainers
+
+```bash
+# Run the template repository setup
+./scripts/setup-template-repo.sh
 ```
 
 **Note:** Some settings (like GitHub Actions permissions) cannot be configured via API and must be set manually in the UI.
