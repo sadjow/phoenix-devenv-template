@@ -68,7 +68,7 @@ jobs:
           find . -type f -not -path "./.git/*" -not -path "./devenv*" -not -path "./.github/*" -not -path "./backup/*" -not -name "README.md" -not -name "LICENSE" -not -name ".gitignore" -not -name ".envrc" -delete
 
           # Generate new Phoenix application
-          devenv shell mix phx.new . --module PhoenixDevenv --app phoenix_devenv --live --no-install
+          devenv shell echo Y | mix phx.new . --module PhoenixDevenv --app phoenix_devenv --no-install
 
           # Restore backed up config files
           [ -f "backup/dev.exs" ] && cp backup/dev.exs config/
