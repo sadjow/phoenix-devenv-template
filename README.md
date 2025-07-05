@@ -13,6 +13,28 @@ A reference implementation and development environment for Phoenix Framework pro
 - Consistent developer experience across all platforms (macOS, Linux, WSL)
 - CI integration with GitHub Actions
 - Automated dependency updates with Dependabot
+- Automated weekly dependency updates via GitHub Actions
+- Auto-merge support for dependency PRs
+
+## CI/CD Setup
+
+This template includes automated workflows:
+
+- **Update devenv** - Weekly updates for devenv lock file (useful for all projects)
+- **Update Phoenix template** - Keeps the template repository up-to-date with latest Phoenix (template repository only - remove this from your projects!)
+
+To enable all features:
+
+**For new projects (using this template):**
+1. Run: `./scripts/setup-for-projects.sh`
+2. Follow the manual steps in the script output
+
+**For template repository maintainers only:**
+1. Run: `./scripts/setup-template-repo.sh`
+2. Follow the manual steps in the script output
+
+See [docs/CI_SETUP.md](docs/CI_SETUP.md) for detailed instructions
+
 
 ## Prerequisites
 
