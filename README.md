@@ -20,7 +20,7 @@ A reference implementation and development environment for Phoenix Framework pro
 
 This template includes automated workflows:
 
-- **Update dependencies** - Weekly updates for devenv dependencies (useful for all projects)
+- **Update devenv** - Weekly updates for devenv lock file (useful for all projects)
 - **Update Phoenix template** - Keeps the template repository up-to-date with latest Phoenix (template repository only - remove this from your projects!)
 
 To enable all features:

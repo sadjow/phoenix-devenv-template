@@ -1,5 +1,5 @@
 ---
-name: Update dependencies
+name: Update devenv
 
 # This workflow is useful for any project using devenv to keep dependencies up-to-date.
 # It runs weekly and creates PRs for outdated devenv dependencies.
@@ -35,17 +35,17 @@ jobs:
           name: devenv
       - name: Install devenv
         run: nix profile install nixpkgs#devenv
-      - name: Update dependencies
+      - name: Update devenv
         run: devenv update
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: Update devenv dependencies
-          title: Update devenv dependencies
-          branch: update-dependencies
+          commit-message: Update devenv
+          title: Update devenv
+          branch: update-devenv
           body: |
-            Automated update of devenv dependencies.
+            Automated update of devenv lock file.
             
             This PR will be auto-merged if all CI checks pass.
       - name: Enable auto-merge

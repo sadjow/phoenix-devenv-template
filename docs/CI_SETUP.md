@@ -53,7 +53,7 @@ gh auth status
 
 ### For Projects Using This Template
 
-- **Weekly devenv dependency updates** (`update-deps.yml`) - Automatically creates PRs for outdated devenv dependencies. This workflow is useful for any project using devenv to keep dependencies up-to-date.
+- **Weekly devenv updates** (`update-devenv.yml`) - Automatically creates PRs to update the devenv lock file. This workflow is useful for any project using devenv to keep the development environment up-to-date.
 - **Auto-merge** - Dependency update PRs are automatically merged if CI passes
 - **Fast CI builds** - Uses Cachix binary cache to avoid compilation
 
