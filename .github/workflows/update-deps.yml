@@ -5,6 +5,10 @@ name: Update dependencies
 # Settings > Actions > General > Workflow permissions:
 # - Select "Read and write permissions"
 # - Check "Allow GitHub Actions to create and approve pull requests"
+#
+# For auto-merge to work:
+# Settings > General > Pull Requests:
+# - Check "Allow auto-merge"
 
 on:
   schedule:
@@ -31,8 +35,20 @@ jobs:
       - name: Update dependencies
         run: devenv update
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: Update devenv dependencies
           title: Update devenv dependencies
           branch: update-dependencies
+          body: |
+            Automated update of devenv dependencies.
+            
+            This PR will be auto-merged if all CI checks pass.
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

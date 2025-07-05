@@ -5,6 +5,10 @@ name: Update Phoenix Template
 # Settings > Actions > General > Workflow permissions:
 # - Select "Read and write permissions"
 # - Check "Allow GitHub Actions to create and approve pull requests"
+#
+# For auto-merge to work:
+# Settings > General > Pull Requests:
+# - Check "Allow auto-merge"
 
 on:
   schedule:
@@ -34,9 +38,6 @@ jobs:
       - name: Install devenv
         run: nix profile install nixpkgs#devenv
 
-      - name: Setup devenv
-        run: |
-          devenv ci
 
       - name: Check current Phoenix version
         id: current_version
@@ -87,6 +88,7 @@ jobs:
           echo "Phoenix template updated to version $(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2)"
 
       - name: Create Pull Request
+        id: cpr
         if: steps.current_version.outputs.current_version != steps.latest_version.outputs.latest_version
         uses: peter-evans/create-pull-request@v7
         with:
@@ -99,5 +101,14 @@ jobs:
             - Updated Phoenix dependencies
             - Regenerated Phoenix application structure
             - Preserved customized configuration
+            
+            This PR will be auto-merged if all CI checks pass.
           branch: update-phoenix-template
           delete-branch: true
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
