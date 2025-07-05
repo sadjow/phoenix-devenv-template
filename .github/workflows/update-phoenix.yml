@@ -22,6 +22,9 @@ permissions:
 jobs:
   update-phoenix:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: devenv shell bash -- -e {0}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,6 +39,7 @@ jobs:
           name: devenv
 
       - name: Install devenv
+        shell: bash
         run: nix profile install nixpkgs#devenv
 
 
@@ -50,9 +54,9 @@ jobs:
         id: latest_version
         run: |
           # Install Elixir/Phoenix dependencies
-          devenv shell mix local.hex --force
-          devenv shell mix archive.install hex phx_new --force
-          LATEST_VERSION=$(devenv shell mix hex.info phoenix | grep -o "Version:.*[0-9]\.[0-9]\.[0-9]" | cut -d':' -f2 | tr -d ' ')
+          mix local.hex --force
+          mix archive.install hex phx_new --force
+          LATEST_VERSION=$(mix hex.info phoenix | grep -o "Version:.*[0-9]\.[0-9]\.[0-9]" | cut -d':' -f2 | tr -d ' ')
           echo "Latest Phoenix version: $LATEST_VERSION"
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
@@ -68,7 +72,7 @@ jobs:
           find . -type f -not -path "./.git/*" -not -path "./devenv*" -not -path "./.github/*" -not -path "./backup/*" -not -name "README.md" -not -name "LICENSE" -not -name ".gitignore" -not -name ".envrc" -delete
 
           # Generate new Phoenix application
-          devenv shell echo Y | mix phx.new . --module PhoenixDevenv --app phoenix_devenv --no-install
+          echo Y | mix phx.new . --module PhoenixDevenv --app phoenix_devenv --no-install
 
           # Restore backed up config files
           [ -f "backup/dev.exs" ] && cp backup/dev.exs config/
@@ -78,12 +82,12 @@ jobs:
           rm -rf backup
 
           # Update database configuration
-          devenv shell sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/dev.exs
-          devenv shell sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/test.exs
+          sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/dev.exs
+          sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/test.exs
 
           # Install dependencies
-          devenv shell mix deps.get
-          devenv shell mix deps.compile
+          mix deps.get
+          mix deps.compile
 
           echo "Phoenix template updated to version $(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2)"
 
