@@ -6,6 +6,10 @@ on:
     - cron: "0 0 * * 0" # Weekly on Sunday
   workflow_dispatch: # Allow manual triggering
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-phoenix:
     runs-on: ubuntu-latest
