@@ -41,6 +41,9 @@ jobs:
           restore-keys: |
             build-${{ runner.os }}-
 
+      - name: Start PostgreSQL
+        run: devenv processes start postgres &
+
       - name: Install dependencies
         run: mix deps.get
 
