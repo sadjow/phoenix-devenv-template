@@ -1,0 +1,76 @@
+# DEVENV-BASED CI WORKFLOW (DISABLED)
+# 
+# This workflow represents an attempt to run CI completely within the devenv environment.
+# While technically possible by running PostgreSQL as a background service, we've decided
+# to use GitHub Actions' PostgreSQL service container instead.
+#
+# Why we chose external database services for CI:
+# 1. Production databases typically use managed services (AWS RDS, Google Cloud SQL, etc.)
+# 2. Testing against an external database service helps catch integration issues early
+# 3. It validates that the application can connect to databases outside the devenv environment
+# 4. Mimics production architecture more closely where the database is a separate service
+#
+# The main technical challenge was getting PostgreSQL to run as a background service
+# during the CI workflow, but the architectural benefits of using an external database
+# service outweigh the convenience of having everything in devenv.
+#
+# This approach ensures we test against a setup that's closer to production while
+# still using devenv for the application runtime environment.
+
+name: CI
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: devenv shell bash -- -e {0}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: cachix/cachix-action@v15
+        with: 
+          name: devenv
+
+      # Install devenv itself (must run in plain Bash!)
+      - name: Install devenv
+        shell: bash
+        run: nix profile install nixpkgs#devenv
+
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: deps
+          key: deps-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Cache compiled build
+        id: cache-build
+        uses: actions/cache@v4
+        with:
+          path: _build
+          key: build-${{ runner.os }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
+      - name: Start PostgreSQL
+        run: devenv processes start postgres &
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile with warnings as errors
+        run: mix compile --warnings-as-errors
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+      - name: Run tests
+        run: mix test

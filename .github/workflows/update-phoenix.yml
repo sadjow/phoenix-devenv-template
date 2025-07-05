@@ -1,0 +1,91 @@
+---
+name: Update Phoenix Template
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Weekly on Sunday
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-phoenix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-unstable
+
+      - name: Install devenv
+        run: nix-env -if https://github.com/cachix/devenv/tarball/latest
+
+      - name: Setup devenv
+        run: |
+          devenv shell direnv allow
+          devenv shell
+
+      - name: Check current Phoenix version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2 || echo "none")
+          echo "Current Phoenix version: $CURRENT_VERSION"
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get latest Phoenix version
+        id: latest_version
+        run: |
+          # Install Elixir/Phoenix dependencies
+          devenv shell mix local.hex --force
+          devenv shell mix archive.install hex phx_new --force
+          LATEST_VERSION=$(devenv shell mix hex.info phoenix | grep -o "Version:.*[0-9]\.[0-9]\.[0-9]" | cut -d':' -f2 | tr -d ' ')
+          echo "Latest Phoenix version: $LATEST_VERSION"
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Regenerate Phoenix application if newer version available
+        if: steps.current_version.outputs.current_version != steps.latest_version.outputs.latest_version
+        run: |
+          # Backup config files that might be customized
+          mkdir -p backup
+          [ -f "config/dev.exs" ] && cp config/dev.exs backup/
+          [ -f "config/test.exs" ] && cp config/test.exs backup/
+
+          # Remove existing Phoenix files except for custom modifications
+          find . -type f -not -path "./.git/*" -not -path "./devenv*" -not -path "./.github/*" -not -path "./backup/*" -not -name "README.md" -not -name "LICENSE" -not -name ".gitignore" -not -name ".envrc" -delete
+
+          # Generate new Phoenix application
+          devenv shell mix phx.new . --module PhoenixDevenv --app phoenix_devenv --live --no-install
+
+          # Restore backed up config files
+          [ -f "backup/dev.exs" ] && cp backup/dev.exs config/
+          [ -f "backup/test.exs" ] && cp backup/test.exs config/
+
+          # Clean up backup directory
+          rm -rf backup
+
+          # Update database configuration
+          devenv shell sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/dev.exs
+          devenv shell sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/test.exs
+
+          # Install dependencies
+          devenv shell mix deps.get
+          devenv shell mix deps.compile
+
+          echo "Phoenix template updated to version $(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2)"
+
+      - name: Create Pull Request
+        if: steps.current_version.outputs.current_version != steps.latest_version.outputs.latest_version
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update Phoenix to version ${{ steps.latest_version.outputs.latest_version }}"
+          title: "Update Phoenix to version ${{ steps.latest_version.outputs.latest_version }}"
+          body: |
+            This PR updates the Phoenix template to version ${{ steps.latest_version.outputs.latest_version }}.
+
+            Changes:
+            - Updated Phoenix dependencies
+            - Regenerated Phoenix application structure
+            - Preserved customized configuration
+          branch: update-phoenix-template
+          delete-branch: true
