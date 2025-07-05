@@ -36,4 +36,12 @@
     mix local.hex --force --if-missing
     mix local.rebar --force --if-missing
   '';
+
+  enterTest = ''
+    # Ensure dependencies are fetched before running tests
+    if [ -f mix.exs ]; then
+      echo "Fetching dependencies for test environment..."
+      mix deps.get
+    fi
+  '';
 }
