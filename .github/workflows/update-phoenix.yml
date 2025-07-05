@@ -55,7 +55,7 @@ jobs:
       - name: Check current Phoenix version
         id: current_version
         run: |
-          CURRENT_VERSION=$(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2 || echo "none")
+          CURRENT_VERSION=$(./scripts/get-current-phoenix-version.sh)
           echo "Current Phoenix version: $CURRENT_VERSION"
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
@@ -65,12 +65,11 @@ jobs:
           # Install Elixir/Phoenix dependencies
           mix local.hex --force
           mix archive.install hex phx_new --force
-          LATEST_VERSION=$(mix hex.info phoenix | grep -o "Version:.*[0-9]\.[0-9]\.[0-9]" | cut -d':' -f2 | tr -d ' ')
+          LATEST_VERSION=$(./scripts/get-latest-phoenix-version.sh)
           echo "Latest Phoenix version: $LATEST_VERSION"
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Regenerate Phoenix application if newer version available
-        if: steps.current_version.outputs.current_version != steps.latest_version.outputs.latest_version
+      - name: Regenerate Phoenix application
         run: |
           # Backup config files that might be customized
           mkdir -p backup
@@ -98,11 +97,10 @@ jobs:
           mix deps.get
           mix deps.compile
 
-          echo "Phoenix template updated to version $(grep -o "version:.*\".*\"" mix.exs | cut -d'"' -f2)"
+          echo "Phoenix template regenerated with latest version"
 
       - name: Create Pull Request
         id: cpr
-        if: steps.current_version.outputs.current_version != steps.latest_version.outputs.latest_version
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "Update Phoenix to version ${{ steps.latest_version.outputs.latest_version }}"
