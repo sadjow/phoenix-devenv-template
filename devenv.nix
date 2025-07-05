@@ -31,5 +31,9 @@
   enterShell = ''
     echo "Elixir version: $(elixir --version)"
     echo "Erlang version: $(erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
+    
+    # Install Hex and rebar if not already installed
+    mix local.hex --force --if-missing
+    mix local.rebar --force --if-missing
   '';
 }
