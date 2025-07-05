@@ -31,8 +31,7 @@ jobs:
 
       - name: Setup devenv
         run: |
-          devenv shell direnv allow
-          devenv shell
+          devenv ci
 
       - name: Check current Phoenix version
         id: current_version
