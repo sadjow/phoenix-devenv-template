@@ -1,3 +1,22 @@
+# DEVENV-BASED CI WORKFLOW (DISABLED)
+# 
+# This workflow represents an attempt to run CI completely within the devenv environment.
+# While technically possible by running PostgreSQL as a background service, we've decided
+# to use GitHub Actions' PostgreSQL service container instead.
+#
+# Why we chose external database services for CI:
+# 1. Production databases typically use managed services (AWS RDS, Google Cloud SQL, etc.)
+# 2. Testing against an external database service helps catch integration issues early
+# 3. It validates that the application can connect to databases outside the devenv environment
+# 4. Mimics production architecture more closely where the database is a separate service
+#
+# The main technical challenge was getting PostgreSQL to run as a background service
+# during the CI workflow, but the architectural benefits of using an external database
+# service outweigh the convenience of having everything in devenv.
+#
+# This approach ensures we test against a setup that's closer to production while
+# still using devenv for the application runtime environment.
+
 name: CI
 on: push
 
