@@ -1,6 +1,11 @@
 ---
 name: Update Phoenix Template
 
+# This workflow requires repository settings to allow GitHub Actions to create PRs:
+# Settings > Actions > General > Workflow permissions:
+# - Select "Read and write permissions"
+# - Check "Allow GitHub Actions to create and approve pull requests"
+
 on:
   schedule:
     - cron: "0 0 * * 0" # Weekly on Sunday
