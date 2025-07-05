@@ -1,6 +1,10 @@
 ---
 name: Update Phoenix Template
 
+# WARNING: This workflow is specifically for maintaining the phoenix-devenv-template repository.
+# It regenerates the entire Phoenix application, overwriting all files.
+# DO NOT use this workflow in projects created from this template - it will destroy your code!
+# 
 # This workflow requires repository settings to allow GitHub Actions to create PRs:
 # Settings > Actions > General > Workflow permissions:
 # - Select "Read and write permissions"

@@ -18,11 +18,18 @@ A reference implementation and development environment for Phoenix Framework pro
 
 ## CI/CD Setup
 
-This template includes automated workflows for dependency management. To enable all features:
+This template includes automated workflows:
+
+- **Update dependencies** - Weekly updates for devenv dependencies (useful for all projects)
+- **Update Phoenix template** - Keeps the template repository up-to-date with latest Phoenix (template repository only - remove this from your projects!)
+
+To enable all features:
 
 1. Run the configuration script: `./scripts/configure-repo-settings.sh`
 2. Follow the manual steps in the script output
 3. See [docs/CI_SETUP.md](docs/CI_SETUP.md) for detailed instructions
+
+**Important:** When using this template for your project, consider removing `.github/workflows/update-phoenix.yml` as it's designed specifically for maintaining the template repository.
 
 ## Prerequisites
 

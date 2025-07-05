@@ -1,6 +1,9 @@
 ---
 name: Update dependencies
 
+# This workflow is useful for any project using devenv to keep dependencies up-to-date.
+# It runs weekly and creates PRs for outdated devenv dependencies.
+#
 # This workflow requires repository settings to allow GitHub Actions to create PRs:
 # Settings > Actions > General > Workflow permissions:
 # - Select "Read and write permissions"

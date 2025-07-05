@@ -51,12 +51,15 @@ gh auth status
 
 ## Workflow Features
 
-Once configured, the repository will have:
+### For Projects Using This Template
 
-- **Weekly dependency updates** - Automatically creates PRs for outdated devenv dependencies
-- **Phoenix template updates** - Checks for new Phoenix versions and updates the template
+- **Weekly devenv dependency updates** (`update-deps.yml`) - Automatically creates PRs for outdated devenv dependencies. This workflow is useful for any project using devenv to keep dependencies up-to-date.
 - **Auto-merge** - Dependency update PRs are automatically merged if CI passes
 - **Fast CI builds** - Uses Cachix binary cache to avoid compilation
+
+### For The Template Repository Only
+
+- **Phoenix template updates** (`update-phoenix.yml`) - This workflow is specifically designed for maintaining the template repository itself. It checks for new Phoenix versions and regenerates the entire Phoenix application, overwriting all files. **This workflow should be removed or disabled in projects created from this template** as it would destroy your project-specific code.
 
 ## Troubleshooting
 
