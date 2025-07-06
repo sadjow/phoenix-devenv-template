@@ -85,6 +85,11 @@ jobs:
           echo "Changes after recreating Phoenix:"
           git diff --stat
 
+      - name: Disable git hooks before PR creation
+        shell: bash
+        run: |
+          git config core.hooksPath /dev/null
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
