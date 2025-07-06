@@ -64,7 +64,7 @@ fi
 
 # Function to escape strings for sed
 escape_for_sed() {
-  echo "$1" | sed 's/[[\.*^$()+?{|]/\\&/g'
+  echo "$1" | sed 's/[[\.*^$()+?{|/]/\\&/g'
 }
 
 # Replace new salts with old ones if they existed
