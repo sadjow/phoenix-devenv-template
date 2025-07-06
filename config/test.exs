@@ -8,6 +8,7 @@ import Config
 config :phoenix_devenv, PhoenixDevenv.Repo,
   username: "postgres",
   password: "postgres",
+  password: "postgres",
   hostname: "localhost",
   database: "phoenix_devenv_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
@@ -17,7 +18,7 @@ config :phoenix_devenv, PhoenixDevenv.Repo,
 # you can enable the server option below.
 config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "JlIgSqjVYnT+ocmjr12HsLaiXOCRB7pn7MkcN3/ReQxdlha6cmq6qrLTFJddW2Xn",
+  secret_key_base: "cxys7ra3czKPWKeH0PPprs5YSmwZ/EKK7cY7UM09ej0WQXtPTBo4v+tyjNmvkKbh",
   server: false
 
 # In test we don't send emails

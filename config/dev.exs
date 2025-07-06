@@ -4,6 +4,7 @@ import Config
 config :phoenix_devenv, PhoenixDevenv.Repo,
   username: "postgres",
   password: "postgres",
+  password: "postgres",
   hostname: "localhost",
   database: "phoenix_devenv_dev",
   stacktrace: true,
@@ -23,7 +24,7 @@ config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "BAp7PEeIv5M59X1b+Cjk/0N49totr7GUlQxwFSTNLUXGEwgBlj4pgYjBlhF2mOwT",
+  secret_key_base: "sYOJhP+I0xwGqGBr6qgE/wZZca5oiY3wN6Py2lVjhSznmJn+ctZdv1oJpF7RLVvP",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:phoenix_devenv, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:phoenix_devenv, ~w(--watch)]}
