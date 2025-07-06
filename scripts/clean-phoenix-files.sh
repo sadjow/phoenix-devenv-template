@@ -20,6 +20,7 @@ echo "Removing Phoenix files (preserving custom files)..."
 
 # Remove specific Phoenix files
 rm -f mix.exs mix.lock .formatter.exs
+# Note: We'll regenerate mix.exs and mix.lock to get updated dependencies
 
 # Remove Phoenix directories
 for dir in lib test config priv assets _build deps; do
