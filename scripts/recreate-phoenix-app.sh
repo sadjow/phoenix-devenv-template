@@ -62,26 +62,41 @@ if git show HEAD:lib/${APP_NAME}_web/endpoint.ex &>/dev/null; then
   OLD_PUBSUB_SALT=$(git show HEAD:lib/${APP_NAME}_web/endpoint.ex | grep "signing_salt:" | grep -o '"[^"]*"' | tr -d '"' || true)
 fi
 
+# Function to escape strings for sed
+escape_for_sed() {
+  echo "$1" | sed 's/[[\.*^$()+?{|]/\\&/g'
+}
+
 # Replace new salts with old ones if they existed
 if [ -n "${OLD_SIGNING_SALT:-}" ] && [ -n "$NEW_SIGNING_SALT" ]; then
   echo "Preserving signing_salt..."
-  sed -i.bak "s/signing_salt: \"$NEW_SIGNING_SALT\"/signing_salt: \"$OLD_SIGNING_SALT\"/" config/config.exs
+  NEW_ESCAPED=$(escape_for_sed "$NEW_SIGNING_SALT")
+  OLD_ESCAPED=$(escape_for_sed "$OLD_SIGNING_SALT")
+  sed -i.bak "s/signing_salt: \"$NEW_ESCAPED\"/signing_salt: \"$OLD_ESCAPED\"/" config/config.exs
 fi
 if [ -n "${OLD_LIVE_VIEW_SALT:-}" ] && [ -n "$NEW_LIVE_VIEW_SALT" ]; then
   echo "Preserving live_view signing_salt..."
-  sed -i.bak "s/signing_salt: \"$NEW_LIVE_VIEW_SALT\"/signing_salt: \"$OLD_LIVE_VIEW_SALT\"/" config/config.exs
+  NEW_ESCAPED=$(escape_for_sed "$NEW_LIVE_VIEW_SALT")
+  OLD_ESCAPED=$(escape_for_sed "$OLD_LIVE_VIEW_SALT")
+  sed -i.bak "s/signing_salt: \"$NEW_ESCAPED\"/signing_salt: \"$OLD_ESCAPED\"/" config/config.exs
 fi
 if [ -n "${OLD_SECRET_KEY_BASE:-}" ] && [ -n "$NEW_SECRET_KEY_BASE" ]; then
   echo "Preserving dev secret_key_base..."
-  sed -i.bak "s/secret_key_base: \"$NEW_SECRET_KEY_BASE\"/secret_key_base: \"$OLD_SECRET_KEY_BASE\"/" config/dev.exs
+  NEW_ESCAPED=$(escape_for_sed "$NEW_SECRET_KEY_BASE")
+  OLD_ESCAPED=$(escape_for_sed "$OLD_SECRET_KEY_BASE")
+  sed -i.bak "s/secret_key_base: \"$NEW_ESCAPED\"/secret_key_base: \"$OLD_ESCAPED\"/" config/dev.exs
 fi
 if [ -n "${OLD_TEST_SECRET_KEY_BASE:-}" ] && [ -n "$NEW_TEST_SECRET_KEY_BASE" ]; then
   echo "Preserving test secret_key_base..."
-  sed -i.bak "s/secret_key_base: \"$NEW_TEST_SECRET_KEY_BASE\"/secret_key_base: \"$OLD_TEST_SECRET_KEY_BASE\"/" config/test.exs
+  NEW_ESCAPED=$(escape_for_sed "$NEW_TEST_SECRET_KEY_BASE")
+  OLD_ESCAPED=$(escape_for_sed "$OLD_TEST_SECRET_KEY_BASE")
+  sed -i.bak "s/secret_key_base: \"$NEW_ESCAPED\"/secret_key_base: \"$OLD_ESCAPED\"/" config/test.exs
 fi
 if [ -n "${OLD_PUBSUB_SALT:-}" ] && [ -n "$NEW_PUBSUB_SALT" ]; then
   echo "Preserving pubsub signing_salt..."
-  sed -i.bak "s/signing_salt: \"$NEW_PUBSUB_SALT\"/signing_salt: \"$OLD_PUBSUB_SALT\"/" lib/${APP_NAME}_web/endpoint.ex
+  NEW_ESCAPED=$(escape_for_sed "$NEW_PUBSUB_SALT")
+  OLD_ESCAPED=$(escape_for_sed "$OLD_PUBSUB_SALT")
+  sed -i.bak "s/signing_salt: \"$NEW_ESCAPED\"/signing_salt: \"$OLD_ESCAPED\"/" lib/${APP_NAME}_web/endpoint.ex
 fi
 
 # Apply our custom database configuration
