@@ -58,27 +58,43 @@ jobs:
           echo "Latest Phoenix version: $LATEST_VERSION"
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Clean Phoenix files
-        run: ./scripts/clean-phoenix-files.sh
-
-      - name: Show removed files
+      - name: Check if update is needed
+        id: check_update
         run: |
-          echo "Files removed:"
-          git status --short
+          CURRENT="${{ steps.current_version.outputs.current_version }}"
+          LATEST="${{ steps.latest_version.outputs.latest_version }}"
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "Already on latest Phoenix version $LATEST"
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "skip_reason=Already on latest version" >> $GITHUB_OUTPUT
+          else
+            echo "Update available: $CURRENT -> $LATEST"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Recreate Phoenix application
-        run: ./scripts/recreate-phoenix-app.sh
+      - name: Skip if no update needed
+        if: steps.check_update.outputs.needs_update == 'false'
+        run: |
+          echo "Skipping Phoenix regeneration - ${{ steps.check_update.outputs.skip_reason }}"
+          exit 0
+
+      - name: Regenerate Phoenix application
+        if: steps.check_update.outputs.needs_update == 'true'
+        run: ./scripts/regenerate-phoenix.sh
 
       - name: Show changes after recreation
+        if: steps.check_update.outputs.needs_update == 'true'
         run: |
           echo "Changes after recreating Phoenix:"
           git diff --stat
 
       - name: Disable git hooks before PR creation
+        if: steps.check_update.outputs.needs_update == 'true'
         run: |
           git config core.hooksPath /dev/null
 
       - name: Create Pull Request
+        if: steps.check_update.outputs.needs_update == 'true'
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
