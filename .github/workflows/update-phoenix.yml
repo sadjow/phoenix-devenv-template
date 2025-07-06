@@ -26,30 +26,19 @@ permissions:
 jobs:
   update-phoenix:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: devenv shell bash -- -e {0}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
       - name: Disable git hooks for CI
-        shell: bash
         run: |
           git config core.hooksPath /dev/null
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
         with:
-          nix_path: nixpkgs=channel:nixpkgs-unstable
-
-      - uses: cachix/cachix-action@v16
-        with:
-          name: devenv
-
-      - name: Install devenv
-        shell: bash
-        run: nix profile install nixpkgs#devenv
+          version-file: .tool-versions
+          version-type: strict
 
 
       - name: Check current Phoenix version
@@ -86,7 +75,6 @@ jobs:
           git diff --stat
 
       - name: Disable git hooks before PR creation
-        shell: bash
         run: |
           git config core.hooksPath /dev/null
 
