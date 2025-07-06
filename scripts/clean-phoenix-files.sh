@@ -36,6 +36,7 @@ find . -maxdepth 1 -type f \
   -not -name "README.md" \
   -not -name "LICENSE" \
   -not -name ".envrc" \
+  -not -name ".tool-versions" \
   -not -name ".phoenix_app_name" \
   -not -path "./scripts/*" \
   -not -path "./docs/*" \
