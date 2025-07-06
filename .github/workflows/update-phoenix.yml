@@ -69,8 +69,21 @@ jobs:
           echo "Latest Phoenix version: $LATEST_VERSION"
           echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Regenerate Phoenix application
-        run: ./scripts/regenerate-phoenix.sh
+      - name: Clean Phoenix files
+        run: ./scripts/clean-phoenix-files.sh
+
+      - name: Show removed files
+        run: |
+          echo "Files removed:"
+          git status --short
+
+      - name: Recreate Phoenix application
+        run: ./scripts/recreate-phoenix-app.sh
+
+      - name: Show changes after recreation
+        run: |
+          echo "Changes after recreating Phoenix:"
+          git diff --stat
 
       - name: Create Pull Request
         id: cpr

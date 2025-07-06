@@ -1,46 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "Regenerating Phoenix application..."
-echo "==================================="
+# This script regenerates the Phoenix application from scratch
+# It calls the clean and recreate scripts in sequence
 
-# Remove existing Phoenix files except for custom modifications
-echo "Removing Phoenix files (preserving custom files)..."
-find . -type f \
-  -not -path "./.git/*" \
-  -not -path "./devenv*" \
-  -not -path "./.github/*" \
-  -not -path "./scripts/*" \
-  -not -path "./docs/*" \
-  -not -name "README.md" \
-  -not -name "LICENSE" \
-  -not -name ".gitignore" \
-  -not -name ".envrc" \
-  -delete
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Also remove empty directories (except preserved ones)
-find . -type d -empty \
-  -not -path "./.git/*" \
-  -not -path "./devenv*" \
-  -not -path "./.github/*" \
-  -not -path "./scripts/*" \
-  -not -path "./docs/*" \
-  -delete 2>/dev/null || true
+echo "Step 1: Cleaning Phoenix files..."
+echo "================================="
+"$SCRIPT_DIR/clean-phoenix-files.sh"
 
-# Generate new Phoenix application
-echo "Generating new Phoenix application..."
-mix phx.new . --module PhoenixDevenv --app phoenix_devenv --no-install
+echo ""
+echo "Step 2: Checking git status..."
+echo "=============================="
+git status --short
 
-# Apply our custom database configuration
-echo "Applying custom database configuration..."
-# Add password to dev.exs
-sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/dev.exs
-# Add password to test.exs
-sed -i 's/username: "postgres",/username: "postgres",\n  password: "postgres",/' config/test.exs
+echo ""
+echo "Step 3: Recreating Phoenix application..."
+echo "========================================="
+"$SCRIPT_DIR/recreate-phoenix-app.sh"
 
-# Install dependencies
-echo "Installing dependencies..."
-mix deps.get
-mix deps.compile
-
-echo "Phoenix template regenerated successfully!"
+echo ""
+echo "Phoenix regeneration complete!"
