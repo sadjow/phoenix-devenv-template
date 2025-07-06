@@ -7,7 +7,7 @@ defmodule PhoenixDevenvWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_phoenix_devenv_key",
-    signing_salt: "cFC7G054",
+    signing_salt: "TFWzBnC3",
     same_site: "Lax"
   ]
 
