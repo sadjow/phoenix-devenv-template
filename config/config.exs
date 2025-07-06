@@ -20,7 +20,7 @@ config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
     layout: false
   ],
   pubsub_server: PhoenixDevenv.PubSub,
-  live_view: [signing_salt: "Mzt4sah9"]
+  live_view: [signing_salt: "MEgrhxJp"]
 
 # Configures the mailer
 #
