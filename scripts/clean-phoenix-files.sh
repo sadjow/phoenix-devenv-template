@@ -39,6 +39,7 @@ find . -maxdepth 1 -type f \
   -not -name ".envrc" \
   -not -name ".tool-versions" \
   -not -name ".phoenix_app_name" \
+  -not -name ".phoenix_salts_temp" \
   -not -path "./scripts/*" \
   -not -path "./docs/*" \
   -not -path "./.github/*" \
