@@ -16,7 +16,7 @@ name: Update Phoenix Template
 
 on:
   schedule:
-    - cron: "0 0 * * 0" # Weekly on Sunday
+    - cron: "0 0 * * *" # Daily at midnight UTC
   workflow_dispatch: # Allow manual triggering
 
 permissions:
