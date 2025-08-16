@@ -17,7 +17,7 @@ config :phoenix_devenv, PhoenixDevenv.Repo,
 # you can enable the server option below.
 config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "JlIgSqjVYnT+ocmjr12HsLaiXOCRB7pn7MkcN3/ReQxdlha6cmq6qrLTFJddW2Xn",
+  secret_key_base: "QE6+VOch+RdLcjY0qGlPmvGV5KSEj4y3ufvTimd1cmBe0ov1roBor5u1xktkMuwd",
   server: false
 
 # In test we don't send emails
