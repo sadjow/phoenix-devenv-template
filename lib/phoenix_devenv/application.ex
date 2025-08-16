@@ -12,8 +12,6 @@ defmodule PhoenixDevenv.Application do
       PhoenixDevenv.Repo,
       {DNSCluster, query: Application.get_env(:phoenix_devenv, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PhoenixDevenv.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: PhoenixDevenv.Finch},
       # Start a worker by calling: PhoenixDevenv.Worker.start_link(arg)
       # {PhoenixDevenv.Worker, arg},
       # Start to serve requests, typically the last entry
