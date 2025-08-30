@@ -40,7 +40,7 @@ defmodule PhoenixDevenv.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.8.0"},
+      {:phoenix, "~> 1.8.1"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},
@@ -82,7 +82,7 @@ defmodule PhoenixDevenv.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind phoenix_devenv", "esbuild phoenix_devenv"],
+      "assets.build": ["compile", "tailwind phoenix_devenv", "esbuild phoenix_devenv"],
       "assets.deploy": [
         "tailwind phoenix_devenv --minify",
         "esbuild phoenix_devenv --minify",
