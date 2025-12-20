@@ -19,7 +19,7 @@ config :phoenix_devenv, PhoenixDevenv.Repo,
 config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
+  http: [ip: {127, 0, 0, 1}],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -52,14 +52,18 @@ config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
 # configured to run both http and https servers on
 # different ports.
 
-# Watch static and templates for browser reloading.
+# Reload browser tabs when matching files change.
 config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
     patterns: [
-      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"priv/gettext/.*(po)$",
-      ~r"lib/phoenix_devenv_web/(?:controllers|live|components|router)/?.*\.(ex|heex)$"
+      # Static assets, except user uploads
+      ~r"priv/static/(?!uploads/).*\.(js|css|png|jpeg|jpg|gif|svg)$",
+      # Gettext translations
+      ~r"priv/gettext/.*\.po$",
+      # Router, Controllers, LiveViews and LiveComponents
+      ~r"lib/phoenix_devenv_web/router\.ex$",
+      ~r"lib/phoenix_devenv_web/(controllers|live|components)/.*\.(ex|heex)$"
     ]
   ]
 
