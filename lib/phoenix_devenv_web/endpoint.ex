@@ -24,7 +24,8 @@ defmodule PhoenixDevenvWeb.Endpoint do
     at: "/",
     from: :phoenix_devenv,
     gzip: not code_reloading?,
-    only: PhoenixDevenvWeb.static_paths()
+    only: PhoenixDevenvWeb.static_paths(),
+    raise_on_missing_only: code_reloading?
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
