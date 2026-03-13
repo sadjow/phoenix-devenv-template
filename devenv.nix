@@ -16,6 +16,7 @@
     package = pkgs.postgresql_17;
     initialDatabases = [];
     initialScript = "CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres' CREATEDB;";
+    listen_addresses = "*";
   };
 
    scripts.start-postgres.exec = ''
