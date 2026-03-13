@@ -11,6 +11,11 @@
     inotify-tools
   ];
 
+  env = {
+    MIX_TAILWIND_PATH = (pkgs.lib.getExe pkgs.tailwindcss_4);
+    MIX_ESBUILD_PATH = (pkgs.lib.getExe pkgs.esbuild);
+  };
+
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_17;
