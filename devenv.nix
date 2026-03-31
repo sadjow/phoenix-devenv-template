@@ -7,6 +7,10 @@
   };
   languages.erlang.enable = true;
 
+  packages = with pkgs; [
+    inotify-tools
+  ];
+
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_17;
