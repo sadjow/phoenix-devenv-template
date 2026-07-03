@@ -12,6 +12,15 @@
     pkgs.inotify-tools
   ];
 
+  # Point mix's tailwind/esbuild wrappers at the nix-provided binaries,
+  # so versions come from nixpkgs instead of downloaded releases
+  env = {
+    MIX_TAILWIND_PATH = lib.getExe pkgs.tailwindcss_4;
+    MIX_TAILWIND_VERSION = pkgs.tailwindcss_4.version;
+    MIX_ESBUILD_PATH = lib.getExe pkgs.esbuild;
+    MIX_ESBUILD_VERSION = pkgs.esbuild.version;
+  };
+
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_17;
