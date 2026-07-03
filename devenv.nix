@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   languages.elixir = {
@@ -7,8 +7,9 @@
   };
   languages.erlang.enable = true;
 
-  packages = with pkgs; [
-    inotify-tools
+  # inotify-tools is Linux-only; macOS uses fsevents natively via file_system
+  packages = lib.optionals pkgs.stdenv.isLinux [
+    pkgs.inotify-tools
   ];
 
   services.postgres = {
