@@ -22,6 +22,11 @@ config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   pubsub_server: PhoenixDevenv.PubSub,
   live_view: [signing_salt: "Mzt4sah9"]
 
+# Configure LiveView
+config :phoenix_live_view,
+  # the attribute set on all root tags. Used for Phoenix.LiveView.ColocatedCSS.
+  root_tag_attribute: "phx-r"
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
@@ -34,7 +39,7 @@ config :phoenix_devenv, PhoenixDevenv.Mailer, adapter: Swoosh.Adapters.Local
 # Configure esbuild (the version is required)
 config :esbuild,
   path: System.get_env("MIX_ESBUILD_PATH"),
-  version: System.get_env("MIX_ESBUILD_VERSION"),
+  version: System.get_env("MIX_ESBUILD_VERSION", "0.25.4"),
   phoenix_devenv: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
@@ -45,13 +50,14 @@ config :esbuild,
 # Configure tailwind (the version is required)
 config :tailwind,
   path: System.get_env("MIX_TAILWIND_PATH"),
-  version: System.get_env("MIX_TAILWIND_VERSION"),
+  version: System.get_env("MIX_TAILWIND_VERSION", "4.3.0"),
   phoenix_devenv: [
     args: ~w(
       --input=assets/css/app.css
       --output=priv/static/assets/css/app.css
     ),
-    cd: Path.expand("..", __DIR__)
+    cd: Path.expand("..", __DIR__),
+    env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
 # Configure Elixir's Logger
