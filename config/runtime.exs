@@ -23,6 +23,23 @@ end
 config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+if config_env() == :dev do
+  # Reload browser tabs when matching files change.
+  config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
+    live_reload: [
+      web_console_logger: true,
+      patterns: [
+        # Static assets, except user uploads
+        ~r"priv/static/(?!uploads/).*\.(js|css|png|jpeg|jpg|gif|svg)$",
+        # Gettext translations
+        ~r"priv/gettext/.*\.po$",
+        # Router, Controllers, LiveViews and LiveComponents
+        ~r"lib/phoenix_devenv_web/router\.ex$",
+        ~r"lib/phoenix_devenv_web/(controllers|live|components)/.*\.(ex|heex)$"
+      ]
+    ]
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

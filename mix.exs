@@ -5,7 +5,7 @@ defmodule PhoenixDevenv.MixProject do
     [
       app: :phoenix_devenv,
       version: "0.1.0",
-      elixir: "~> 1.15",
+      elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -40,7 +40,7 @@ defmodule PhoenixDevenv.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.8.8"},
+      {:phoenix, "~> 1.8.9"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},
@@ -50,11 +50,18 @@ defmodule PhoenixDevenv.MixProject do
       {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.5", runtime: Mix.env() == :dev},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.2.0",
        sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:daisyui,
+       github: "saadeghi/daisyui",
+       tag: "v5.5.20",
+       sparse: "packages/bundle",
        app: false,
        compile: false,
        depth: 1},
