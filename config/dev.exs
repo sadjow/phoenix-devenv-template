@@ -23,7 +23,7 @@ config :phoenix_devenv, PhoenixDevenvWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "Zfbu/fMZ0ykv0NMSZ+RHtudNckyd28zXMxtVFyl8g2U+1yLz+mDtL/6X63VOBLLx",
+  secret_key_base: "FIQzv1Ny7RxgheVb+JYhxWuY4UIMTc1XcHX7OJKCMsxCcM8ecFpDpVi8R6vRlegF",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:phoenix_devenv, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:phoenix_devenv, ~w(--watch)]}
