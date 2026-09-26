@@ -48,7 +48,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "4.3.0",
+  version: "4.3.3",
   phoenix_devenv: [
     args: ~w(
       --input=assets/css/app.css
